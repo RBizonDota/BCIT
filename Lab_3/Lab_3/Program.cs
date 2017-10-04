@@ -11,9 +11,8 @@ namespace Lab_3
         void Test1()
         {
             ArrayList arr1;
-            arr1.Adapter(IComparable);
         }
-        static void Main(string[] args)
+        static void Main()
         {
         }
     }
