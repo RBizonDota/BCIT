@@ -6,11 +6,7 @@ namespace Lab_3
     {
         void print();
     }
-    interface IComparable
-    {
-        int CompareTo(object obj);
-    }
-    abstract class Figure : IComparable,IPrint
+    abstract class Figure : IComparable, IPrint
     {
         virtual public double square() { return 0; }
         public int CompareTo(object obj)
@@ -26,7 +22,7 @@ namespace Lab_3
         abstract public void print();
 
     }
-    class Circle : Figure, IComparable
+    class Circle : Figure
     {
         private double r;
         public double radius
@@ -63,7 +59,7 @@ namespace Lab_3
         }
 
     }
-    class Rect : Figure, IComparable
+    class Rect : Figure
     {
         private double a;
         private double b;
@@ -114,7 +110,7 @@ namespace Lab_3
             Console.WriteLine(this.ToString());
         }
     }
-    class Square : Rect, IComparable
+    class Square : Rect
     {
         private double a;
         //public override double A
