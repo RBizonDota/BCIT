@@ -82,11 +82,6 @@ namespace Lab_2
             }
         }
 
-        public Rect(double a1)
-        {
-            A = a1;
-            B = a1;
-        }
         public Rect(double a1,double b1)
         {
             A = a1;
@@ -138,11 +133,10 @@ namespace Lab_2
         {
             return A * A;
         }
-        public Square(double a1): base(a1)
+        public Square(double a1): base(a1,a1)
         {
         }
     }
-
     class Program
     {
         static void Main(string[] args)

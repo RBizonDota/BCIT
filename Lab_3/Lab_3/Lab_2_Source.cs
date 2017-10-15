@@ -8,14 +8,25 @@ namespace Lab_3
     }
     interface IComparable
     {
-        double getS();
+        int CompareTo(object obj);
     }
-    abstract class Figure : IComparable
+    abstract class Figure : IComparable,IPrint
     {
-        public double getS() => square();
         virtual public double square() { return 0; }
+        public int CompareTo(object obj)
+        {
+            Figure f1 = obj as Figure;
+            if (f1 == null)
+                throw new ArgumentException("obj is not Figure!!!");
+            //if (this.square() > f1.square()) return 1;
+            //else if (this.square() == f1.square()) return 0;
+            //else return -1;
+            return this.square().CompareTo(f1.square());
+        }
+        abstract public void print();
+
     }
-    class Circle : Figure, IPrint
+    class Circle : Figure, IComparable
     {
         private double r;
         public double radius
@@ -38,21 +49,21 @@ namespace Lab_3
         public override string ToString()
         {
             string res;
-            res = "Class: Circle \n" +
-               $"radius: {radius}\n" +
-               $"Square: {square()}";
+            res = "Class: Circle," +
+               $" Area: {Math.Round(square(), 3)}";
             return res;
         }
         public override double square()
         {
             return Math.PI * r * r;
         }
-        public void print()
+        public override void print()
         {
             Console.WriteLine(this.ToString());
         }
+
     }
-    class Rect : Figure, IPrint
+    class Rect : Figure, IComparable
     {
         private double a;
         private double b;
@@ -82,12 +93,6 @@ namespace Lab_3
                 b = value;
             }
         }
-
-        public Rect(double a1)
-        {
-            A = a1;
-            B = a1;
-        }
         public Rect(double a1, double b1)
         {
             A = a1;
@@ -96,50 +101,47 @@ namespace Lab_3
         public override string ToString()
         {
             string res;
-            res = "Class: Rectangle \n" +
-               $"Height: {A}\n" +
-               $"Width: {B}\n" +
-               $"Square: {square()}";
+            res = "Class: Rectangle," +
+               $" Area: {Math.Round(square(),3)}";
             return res;
         }
         public override double square()
         {
             return A * B;
         }
-        public void print()
+        public override void print()
         {
             Console.WriteLine(this.ToString());
         }
     }
-    class Square : Rect
+    class Square : Rect, IComparable
     {
         private double a;
-        public override double A
-        {
-            get
-            {
-                return a;
-            }
-            set
-            {
-                if (value < 0)
-                    throw new ArgumentOutOfRangeException($"{nameof(value)} должно быть положительным!");
-                a = value;
-            }
-        }
+        //public override double A
+        //{
+        //    get
+        //    {
+        //        return a;
+        //    }
+        //    set
+        //    {
+        //        if (value < 0)
+        //            throw new ArgumentOutOfRangeException($"{nameof(value)} должно быть положительным!");
+        //        a = value;
+        //    }
+        //}
         public override string ToString()
         {
             string res;
-            res = "Class: Square \n" +
-               $"Side: {A}\n" +
-               $"Square: {square()}";
+            res = "Class: Square," +
+               $" Area: {Math.Round(square(), 3)}";
             return res;
         }
-        public override double square()
-        {
-            return A * A;
-        }
-        public Square(double a1) : base(a1)
+        //public override double square()
+        //{
+        //    return A * A;
+        //}
+        public Square(double a1) : base(a1,a1)
         {
         }
     }
