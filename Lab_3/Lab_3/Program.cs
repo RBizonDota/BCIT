@@ -11,16 +11,8 @@ namespace Lab_3
         
         static void Main()
         {
-            TestArray a = new TestArray();
-            Random c = new Random();
-            a.Gener(10, 6);
-            a.print();
-            Console.ReadKey();
-            Console.Clear();
-            Square s1 = new Square(2), s2 = new Square(1);
-            a.Sort();
-            a.print();
-            Console.ReadKey();
+            Menu m =new Menu();
+            m.run();
         }
     }
 }
