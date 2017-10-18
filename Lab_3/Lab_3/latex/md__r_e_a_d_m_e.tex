@@ -1,0 +1,655 @@
+\subsection*{Лабораторная работа по дисциплине БКИТ №X}
+
+Выполнил\+: \href{https://vk.com/snipghost}{\tt Михаил Кучеренко \char`\"{}\+Snip\+Ghost\char`\"{}, ИУ5-\/34}, 18.\+10.\+2017 
+
+~\newline
+
+
+\subsubsection*{I. Описание задания}
+
+Разработать программу, реализующую работу с классами.
+\begin{DoxyEnumerate}
+\item Программа должна быть разработана в виде консольного приложения на языке C\#.
+\item Абстрактный класс «Геометрическая фигура» содержит виртуальный метод для вычисления площади фигуры.
+\item Класс «Прямоугольник» наследуется от «Геометрическая фигура». Ширина и высота объявляются как свойства (property). Класс должен содержать конструктор по параметрам «ширина» и «высота».
+\item Класс «Квадрат» наследуется от «Прямоугольник». Класс должен содержать конструктор по длине стороны.
+\item Класс «Круг» наследуется от «Геометрическая фигура». Радиус объявляется как свойство (property). Класс должен содержать конструктор по параметру «радиус».
+\item Для классов «Прямоугольник», «Квадрат», «Круг» переопределить виртуальный метод Object.\+To\+String(), который возвращает в виде строки основные параметры фигуры и ее площадь.
+\item Разработать интерфейс I\+Print. Интерфейс содержит метод Print(), который не принимает параметров и возвращает void. Для классов «Прямоугольник», «Квадрат», «Круг» реализовать наследование от интерфейса I\+Print. Переопределяемый метод Print() выводит на консоль информацию, возвращаемую переопределенным методом To\+String(). 
+\end{DoxyEnumerate}
+
+~\newline
+
+
+\subsubsection*{II. Код программы}
+
+
+\begin{DoxyCode}
+﻿using System;
+\textcolor{keyword}{using} System.Collections;
+\textcolor{keyword}{using} System.Linq;
+\textcolor{keyword}{using} System.Text;
+\textcolor{keyword}{using} System.Threading.Tasks;
+
+\textcolor{keyword}{namespace }\hyperlink{namespace_lab__3}{Lab\_3}
+\{
+    \textcolor{keyword}{class }Program
+    \{
+
+        \textcolor{keyword}{static} \textcolor{keywordtype}{void} Main()
+        \{
+            Menu m =\textcolor{keyword}{new} Menu();
+            m.run();
+        \}
+    \}
+\}
+﻿using System;
+
+\textcolor{keyword}{namespace }\hyperlink{namespace_lab__3}{Lab\_3}
+\{
+    \textcolor{keyword}{interface }IPrint
+    \{
+        \textcolor{keywordtype}{void} print();
+    \}
+    \textcolor{keyword}{abstract} \textcolor{keyword}{class }Figure : IComparable, IPrint
+    \{
+        \textcolor{keyword}{virtual} \textcolor{keyword}{public} \textcolor{keywordtype}{double} square() \{ \textcolor{keywordflow}{return} 0; \}
+        \textcolor{keyword}{public} \textcolor{keywordtype}{int} CompareTo(\textcolor{keywordtype}{object} obj)
+        \{
+            Figure f1 = obj as Figure;
+            \textcolor{keywordflow}{if} (f1 == null)
+                \textcolor{keywordflow}{throw} \textcolor{keyword}{new} ArgumentException(\textcolor{stringliteral}{"obj is not Figure!!!"});
+            \textcolor{comment}{//if (this.square() > f1.square()) return 1;}
+            \textcolor{comment}{//else if (this.square() == f1.square()) return 0;}
+            \textcolor{comment}{//else return -1;}
+            \textcolor{keywordflow}{return} this.square().CompareTo(f1.square());
+        \}
+        \textcolor{keyword}{abstract} \textcolor{keyword}{public} \textcolor{keywordtype}{void} print();
+
+    \}
+    \textcolor{keyword}{class }Circle : Figure
+    \{
+        \textcolor{keyword}{private} \textcolor{keywordtype}{double} r;
+        \textcolor{keyword}{public} \textcolor{keywordtype}{double} radius
+        \{
+            \textcolor{keyword}{get}
+            \{
+                \textcolor{keywordflow}{return} r;
+            \}
+            \textcolor{keyword}{set}
+            \{
+                \textcolor{keywordflow}{if} (value < 0)
+                    \textcolor{keywordflow}{throw} \textcolor{keyword}{new} ArgumentOutOfRangeException($\textcolor{stringliteral}{"\{nameof(value)\} должно быть положительным!"});
+                r = value;
+            \}
+        \}
+        \textcolor{keyword}{public} Circle(\textcolor{keywordtype}{double} r1)
+        \{
+            radius = r1;
+        \}
+        \textcolor{keyword}{public} \textcolor{keyword}{override} \textcolor{keywordtype}{string} ToString()
+        \{
+            \textcolor{keywordtype}{string} res;
+            res = \textcolor{stringliteral}{"Class: Circle,"} +
+               $\textcolor{stringliteral}{" Area: \{Math.Round(square(), 3)\}"};
+            \textcolor{keywordflow}{return} res;
+        \}
+        \textcolor{keyword}{public} \textcolor{keyword}{override} \textcolor{keywordtype}{double} square()
+        \{
+            \textcolor{keywordflow}{return} Math.PI * r * r;
+        \}
+        \textcolor{keyword}{public} \textcolor{keyword}{override} \textcolor{keywordtype}{void} print()
+        \{
+            Console.WriteLine(this.ToString());
+        \}
+
+    \}
+    \textcolor{keyword}{class }Rect : Figure
+    \{
+        \textcolor{keyword}{private} \textcolor{keywordtype}{double} a;
+        \textcolor{keyword}{private} \textcolor{keywordtype}{double} b;
+        \textcolor{keyword}{virtual} \textcolor{keyword}{public} \textcolor{keywordtype}{double} A
+        \{
+            \textcolor{keyword}{get}
+            \{
+                \textcolor{keywordflow}{return} a;
+            \}
+            \textcolor{keyword}{set}
+            \{
+                \textcolor{keywordflow}{if} (value < 0)
+                    \textcolor{keywordflow}{throw} \textcolor{keyword}{new} ArgumentOutOfRangeException($\textcolor{stringliteral}{"\{nameof(value)\} должно быть положительным!"});
+                a = value;
+            \}
+        \}
+        \textcolor{keyword}{virtual} \textcolor{keyword}{public} \textcolor{keywordtype}{double} B
+        \{
+            \textcolor{keyword}{get}
+            \{
+                \textcolor{keywordflow}{return} b;
+            \}
+            \textcolor{keyword}{set}
+            \{
+                \textcolor{keywordflow}{if} (value < 0)
+                    \textcolor{keywordflow}{throw} \textcolor{keyword}{new} ArgumentOutOfRangeException($\textcolor{stringliteral}{"\{nameof(value)\} должно быть положительным!"});
+                b = value;
+            \}
+        \}
+        \textcolor{keyword}{public} Rect(\textcolor{keywordtype}{double} a1, \textcolor{keywordtype}{double} b1)
+        \{
+            A = a1;
+            B = b1;
+        \}
+        \textcolor{keyword}{public} \textcolor{keyword}{override} \textcolor{keywordtype}{string} ToString()
+        \{
+            \textcolor{keywordtype}{string} res;
+            res = \textcolor{stringliteral}{"Class: Rectangle,"} +
+               $\textcolor{stringliteral}{" Area: \{Math.Round(square(),3)\}"};
+            \textcolor{keywordflow}{return} res;
+        \}
+        \textcolor{keyword}{public} \textcolor{keyword}{override} \textcolor{keywordtype}{double} square()
+        \{
+            \textcolor{keywordflow}{return} A * B;
+        \}
+        \textcolor{keyword}{public} \textcolor{keyword}{override} \textcolor{keywordtype}{void} print()
+        \{
+            Console.WriteLine(this.ToString());
+        \}
+    \}
+    \textcolor{keyword}{class }Square : Rect
+    \{
+        \textcolor{keyword}{private} \textcolor{keywordtype}{double} a;
+        \textcolor{comment}{//public override double A}
+        \textcolor{comment}{//\{}
+        \textcolor{comment}{//    get}
+        \textcolor{comment}{//    \{}
+        \textcolor{comment}{//        return a;}
+        \textcolor{comment}{//    \}}
+        \textcolor{comment}{//    set}
+        \textcolor{comment}{//    \{}
+        \textcolor{comment}{//        if (value < 0)}
+        \textcolor{comment}{//            throw new ArgumentOutOfRangeException($"\{nameof(value)\} должно быть положительным!");}
+        \textcolor{comment}{//        a = value;}
+        \textcolor{comment}{//    \}}
+        \textcolor{comment}{//\}}
+        \textcolor{keyword}{public} \textcolor{keyword}{override} \textcolor{keywordtype}{string} ToString()
+        \{
+            \textcolor{keywordtype}{string} res;
+            res = \textcolor{stringliteral}{"Class: Square,"} +
+               $\textcolor{stringliteral}{" Area: \{Math.Round(square(), 3)\}"};
+            \textcolor{keywordflow}{return} res;
+        \}
+        \textcolor{comment}{//public override double square()}
+        \textcolor{comment}{//\{}
+        \textcolor{comment}{//    return A * A;}
+        \textcolor{comment}{//\}}
+        \textcolor{keyword}{public} Square(\textcolor{keywordtype}{double} a1) : base(a1,a1)
+        \{
+        \}
+    \}
+\}
+﻿using System;
+\textcolor{keyword}{using} System.Collections;
+\textcolor{keyword}{using} System.Collections.Generic;
+\textcolor{keyword}{using} System.Linq;
+\textcolor{keyword}{using} System.Text;
+\textcolor{keyword}{using} System.Threading.Tasks;
+
+\textcolor{keyword}{namespace }\hyperlink{namespace_lab__3}{Lab\_3}
+\{
+
+    \textcolor{keyword}{class }TestArray : IPrint
+    \{
+        ArrayList arr1;
+        Random rand;
+        \textcolor{keyword}{public} TestArray()
+        \{
+            arr1 = \textcolor{keyword}{new} ArrayList();
+            rand = \textcolor{keyword}{new} Random();
+        \}
+        \textcolor{keyword}{public} \textcolor{keywordtype}{void} Gener(\textcolor{keywordtype}{int} rmax, \textcolor{keywordtype}{int} times)
+        \{
+            \textcolor{keywordflow}{for} (\textcolor{keywordtype}{int} i = 0; i < times; i++)
+            \{
+                Figure res = null;
+                \textcolor{keywordtype}{int} a = rand.Next(3);
+                \textcolor{keywordflow}{switch} (a)
+                \{
+                    \textcolor{keywordflow}{case} 0:
+                        res = \textcolor{keyword}{new} Circle(rand.Next(rmax));
+                        \textcolor{keywordflow}{break};
+                    \textcolor{keywordflow}{case} 1:
+                        res = \textcolor{keyword}{new} Rect(rand.Next(rmax), rand.Next(rmax));
+                        \textcolor{keywordflow}{break};
+                    \textcolor{keywordflow}{case} 2:
+                        res = \textcolor{keyword}{new} Square(rand.Next(rmax));
+                        \textcolor{keywordflow}{break};
+                \}
+                arr1.Add(res);
+            \}
+        \}
+        \textcolor{keyword}{public} \textcolor{keywordtype}{void} print()
+        \{
+            \textcolor{keywordflow}{foreach} (Figure f \textcolor{keywordflow}{in} arr1)
+            \{
+                f.print();
+            \}
+        \}
+        \textcolor{keyword}{public} \textcolor{keywordtype}{void} Sort()
+        \{
+            arr1.Sort();
+        \}
+    \}
+    \textcolor{comment}{//==================================}
+    \textcolor{keyword}{public} \textcolor{keyword}{interface }IMatrAdapter<T>
+    \{
+       T getEmptyElement();
+       \textcolor{keywordtype}{bool} checkEmptyElement(T element);
+    \}
+    \textcolor{keyword}{public} \textcolor{keyword}{class }FigureMatrixCheckEmpty : IMatrAdapter<Figure>
+    \{
+        Figure IMatrAdapter<Figure>.getEmptyElement()
+        \{
+            \textcolor{keywordflow}{return} null;
+        \}
+        \textcolor{keywordtype}{bool} IMatrAdapter<Figure>.checkEmptyElement(Figure element)
+        \{
+            \textcolor{keywordtype}{bool} res = \textcolor{keyword}{false};
+            \textcolor{keywordflow}{if} (element == null)
+                res = \textcolor{keyword}{true};
+            \textcolor{keywordflow}{return} res;
+        \}
+    \}
+    \textcolor{keyword}{class }Matrix<T>:IPrint
+    \{
+        \textcolor{keywordtype}{int} xmax, ymax, zmax;
+        \textcolor{keyword}{public} IMatrAdapter<T> Adap;
+        Dictionary<string, T> \_matr = \textcolor{keyword}{new} Dictionary<string, T>();
+        \textcolor{keyword}{public} Matrix(\textcolor{keywordtype}{int} \_xmax, \textcolor{keywordtype}{int} \_ymax, \textcolor{keywordtype}{int} \_zmax, IMatrAdapter<T> IMCE)
+        \{
+            xmax = \_xmax;
+            ymax = \_ymax;
+            zmax = \_zmax;
+            Adap = IMCE;
+        \}
+        \textcolor{keyword}{public} T \textcolor{keyword}{this}[\textcolor{keywordtype}{int} x, \textcolor{keywordtype}{int} y, \textcolor{keywordtype}{int} z]
+        \{
+            \textcolor{keyword}{set}
+            \{
+                CheckBounds(x, y, z);
+                \textcolor{keywordtype}{string} key = DictKey(x, y, z);
+                \textcolor{keywordflow}{if} (this.\_matr.ContainsKey(key))
+                \{
+                    this.\_matr[key] = value;
+                \}
+                \textcolor{keywordflow}{else}
+                \{
+                    this.\_matr.Add(key, value);
+                \}
+            \}
+            \textcolor{keyword}{get}
+            \{
+                CheckBounds(x, y, z);
+                \textcolor{keywordtype}{string} key = DictKey(x, y, z);
+                \textcolor{keywordflow}{if} (this.\_matr.ContainsKey(key))
+                \{
+                    \textcolor{keywordflow}{return} this.\_matr[key];
+                \}
+                \textcolor{keywordflow}{else}
+                \{
+                    \textcolor{keywordflow}{return} this.Adap.getEmptyElement();
+                \}
+            \}
+        \}
+        \textcolor{keywordtype}{void} CheckBounds(\textcolor{keywordtype}{int} x, \textcolor{keywordtype}{int} y, \textcolor{keywordtype}{int} z)
+        \{
+            \textcolor{keywordflow}{if} (x < 0 || x >= xmax)
+                \textcolor{keywordflow}{throw} \textcolor{keyword}{new} ArgumentOutOfRangeException(\textcolor{stringliteral}{"WRONG x"});
+            \textcolor{keywordflow}{if} (y < 0 || y >= ymax)
+                \textcolor{keywordflow}{throw} \textcolor{keyword}{new} ArgumentOutOfRangeException(\textcolor{stringliteral}{"WRONG y"});
+            \textcolor{keywordflow}{if} (z < 0 || z >= zmax)
+                \textcolor{keywordflow}{throw} \textcolor{keyword}{new} ArgumentOutOfRangeException(\textcolor{stringliteral}{"WRONG z"});
+
+        \}
+        \textcolor{keywordtype}{string} DictKey(\textcolor{keywordtype}{int} x, \textcolor{keywordtype}{int} y, \textcolor{keywordtype}{int} z)
+        \{
+            \textcolor{keywordflow}{return} x.ToString() + \textcolor{stringliteral}{"\_"} + y.ToString()+\textcolor{stringliteral}{"\_"}+ z.ToString();
+        \}
+        \textcolor{keyword}{public} \textcolor{keyword}{override} \textcolor{keywordtype}{string} ToString()
+        \{
+            StringBuilder res = \textcolor{keyword}{new} StringBuilder();
+            res.Append(\textcolor{stringliteral}{"x | y | z | value\(\backslash\)n"});
+            \textcolor{keywordflow}{for} (\textcolor{keywordtype}{int} i = 0; i < xmax; i++)
+            \{
+                \textcolor{keywordflow}{for} (\textcolor{keywordtype}{int} j = 0; j < ymax; j++)
+                \{
+                    \textcolor{keywordflow}{for} (\textcolor{keywordtype}{int} k = 0; k < zmax; k++)
+                    \{
+                        \textcolor{keywordflow}{if} (!Adap.checkEmptyElement(\textcolor{keyword}{this}[i, j, k]))
+                        \{
+                            res.Append(i.ToString()+\textcolor{stringliteral}{" | "}+j.ToString() + \textcolor{stringliteral}{" | "}+k.ToString() + \textcolor{stringliteral}{" | "}+\textcolor{keyword}{this}[i,
+       j, k].ToString()+\textcolor{stringliteral}{"\(\backslash\)n"});
+                        \}
+                    \}
+                \}
+            \}
+            res.Append(\textcolor{stringliteral}{"All other elements are empty\(\backslash\)n"});
+            \textcolor{keywordflow}{return} res.ToString();
+        \}
+        \textcolor{keyword}{public} \textcolor{keywordtype}{void} print()
+        \{
+            Console.WriteLine(this.ToString());
+        \}
+    \}
+    \textcolor{comment}{//==================================}
+    \textcolor{keyword}{class }SimpleList<T> : IPrint
+        where T : IComparable
+    \{
+        \textcolor{keyword}{protected} SimpleListItem<T> first;
+        \textcolor{keyword}{protected} SimpleListItem<T> last;
+        \textcolor{keywordtype}{int} \_count;
+        \textcolor{keyword}{public} SimpleList()
+        \{
+            first = null;
+            last = null;
+        \}
+        \textcolor{keyword}{public} \textcolor{keywordtype}{int} count
+        \{
+            \textcolor{keyword}{get}
+            \{
+                \textcolor{keywordflow}{return} \_count;
+            \}
+            \textcolor{keyword}{protected} \textcolor{keyword}{set}
+            \{
+                \_count = value;
+            \}
+        \}
+        \textcolor{keyword}{public} \textcolor{keywordtype}{void} Add(T element)
+        \{
+            SimpleListItem<T> a = \textcolor{keyword}{new} SimpleListItem<T>(element);
+            \textcolor{keywordflow}{if} (this.last == null)
+            \{
+                first = a;
+                last = a;
+            \}
+            \textcolor{keywordflow}{else}
+            \{
+                last.next = a;
+                last = a;
+            \}
+            count++;
+        \}
+        \textcolor{keyword}{public} SimpleListItem<T> getItem(\textcolor{keywordtype}{int} number)
+        \{
+            \textcolor{keywordflow}{if} (number < 0 || number >= count)
+            \{
+                \textcolor{keywordflow}{throw} \textcolor{keyword}{new} ArgumentException(\textcolor{stringliteral}{"WRONG INDEX"});
+            \}
+            \textcolor{keywordflow}{else}
+            \{
+                \textcolor{keywordtype}{int} i = 0;
+                SimpleListItem<T> buf = this.first;
+                \textcolor{keywordflow}{while} (i<number)
+                \{
+                    i++;
+                    buf = buf.next;
+                \}
+                \textcolor{keywordflow}{return} buf;
+            \}
+        \}
+        \textcolor{keyword}{public} T Get(\textcolor{keywordtype}{int} number)
+        \{
+            \textcolor{keywordflow}{return} getItem(number).data;
+        \}
+        \textcolor{keyword}{public} \textcolor{keyword}{override} \textcolor{keywordtype}{string} ToString()
+        \{
+            StringBuilder res = \textcolor{keyword}{new} StringBuilder();
+            \textcolor{keywordflow}{for} (\textcolor{keywordtype}{int} i = 0; i < count; i++)
+            \{
+                res.Append(i.ToString()+\textcolor{stringliteral}{") "}+Get(i).ToString()+\textcolor{stringliteral}{"\(\backslash\)n"});
+            \}
+            \textcolor{keywordflow}{return} res.ToString();
+        \}
+        \textcolor{keyword}{public} \textcolor{keywordtype}{void} print()
+        \{
+            Console.WriteLine(this.ToString());
+        \}
+    \}
+    \textcolor{keyword}{class }SimpleListItem<T>
+        where T : IComparable
+    \{
+        \textcolor{keyword}{public} SimpleListItem(T param)
+        \{
+            data = param;
+        \}
+        \textcolor{keyword}{public} T data
+        \{
+            \textcolor{keyword}{get}
+            \{
+                \textcolor{keywordflow}{return} \_data;
+            \}
+            \textcolor{keyword}{set}
+            \{
+                \_data = value;
+            \}
+        \}
+        T \_data;
+        \textcolor{keyword}{public} SimpleListItem<T> next
+        \{
+            \textcolor{keyword}{get}
+            \{
+                \textcolor{keywordflow}{return} \_next;
+            \}
+            \textcolor{keyword}{set}
+            \{
+                \_next = value;
+            \}
+        \}
+        SimpleListItem<T> \_next = null;
+    \}
+    \textcolor{keyword}{class }SimpleStack<T> : SimpleList<T>
+        where T:IComparable
+    \{
+        \textcolor{keyword}{public} SimpleListItem<T> Pop(\textcolor{keywordtype}{int} i)
+        \{
+            SimpleListItem<T> buf = getItem(i);
+            \textcolor{keywordflow}{if} (first == buf)
+            \{
+                first = buf.next;\textcolor{comment}{//ошибка, если в списке 1 элемент!}
+                \textcolor{keywordflow}{if} (count == 1)
+                    last = null;
+            \}
+            \textcolor{keywordflow}{else}
+            \{
+                getItem(i - 1).next = buf.next;
+            \}
+            count--;
+            \textcolor{keywordflow}{return} buf;
+        \}
+        \textcolor{keyword}{public} \textcolor{keywordtype}{void} Push(T element)
+        \{
+            Add(element);
+        \}
+    \}
+    \textcolor{comment}{//==================================}
+    \textcolor{keyword}{class }Menu
+    \{
+        MySystem mySys = \textcolor{keyword}{new} MySystem();
+        \textcolor{keywordtype}{int} intReadKey()
+        \{
+            \textcolor{keywordtype}{int} res;
+            \textcolor{keywordtype}{bool} f = \textcolor{keywordtype}{int}.TryParse(Console.ReadLine(), out res);
+            \textcolor{keywordflow}{if} (!f)
+                \textcolor{keywordflow}{throw} \textcolor{keyword}{new} ArgumentException(\textcolor{stringliteral}{"Wrong input"});
+            \textcolor{keywordflow}{return} res;
+        \}
+        \textcolor{keywordtype}{void} case1()
+        \{
+            Console.Clear();
+            Console.Write(\textcolor{stringliteral}{"Enter number of elements. Array will be filled by randomly generated figures: "})
+      ;
+            TestArray a = \textcolor{keyword}{new} TestArray();
+            a.Gener(10, intReadKey());
+            mySys.printPalka(20);
+            a.print();
+            mySys.printPalka(20);
+            Console.WriteLine(\textcolor{stringliteral}{"Sorting..."});
+            mySys.printPalka(20);
+            a.Sort();
+            a.print();
+        \}
+        \textcolor{keywordtype}{void} case2()
+        \{
+            Console.Clear();
+            Console.Write(\textcolor{stringliteral}{"Enter maximum size: "});
+            \textcolor{keywordtype}{int} rmax= intReadKey();
+            Console.Write(\textcolor{stringliteral}{"Enter number of elements generated: "});
+            \textcolor{keywordtype}{int} times = intReadKey();
+            mySys.printPalka(20);
+            Random rand = \textcolor{keyword}{new} Random();
+            Matrix<Figure> matr = \textcolor{keyword}{new} Matrix<Figure>(rmax,rmax,rmax,\textcolor{keyword}{new} FigureMatrixCheckEmpty());
+            \textcolor{keywordflow}{for} (\textcolor{keywordtype}{int} i = 0; i < times; i++)
+            \{
+                \textcolor{keywordtype}{int} i0 = rand.Next(rmax), i1 = rand.Next(rmax), i2 = rand.Next(rmax);
+                matr[i0, i1, i2] = mySys.GenerFigure(10, rand);
+            \}
+            Console.WriteLine(\textcolor{stringliteral}{"Printing existing elements..."});
+            mySys.printPalka(20);
+            matr.print();
+        \}
+        \textcolor{keywordtype}{void} case3()
+        \{
+            Console.Clear();
+            Console.Write(\textcolor{stringliteral}{"Enter number of elements generated: "});
+            \textcolor{keywordtype}{int} times = intReadKey();
+            SimpleStack<Figure> a = \textcolor{keyword}{new} SimpleStack<Figure>();
+            Random rand = \textcolor{keyword}{new} Random();
+            \textcolor{keywordflow}{for} (\textcolor{keywordtype}{int} i = 0; i < times; i++)
+            \{
+                a.Push(mySys.GenerFigure(10, rand));
+            \}
+            Console.WriteLine(\textcolor{stringliteral}{"Printing generated data..."});
+            mySys.printPalka(20);
+            a.print();
+            mySys.printPalka(20);
+            Console.Write(\textcolor{stringliteral}{"Enter number of eliminating element: "});
+            \textcolor{keywordtype}{bool} t = \textcolor{keyword}{true};
+            SimpleListItem<Figure> f = null;
+            \textcolor{keywordflow}{while} (t)
+            \{
+                times = intReadKey();
+                \textcolor{keywordflow}{try}
+                \{
+                    f = a.Pop(times);
+                    t = \textcolor{keyword}{false};
+                \}
+                \textcolor{keywordflow}{catch} (ArgumentException)
+                \{
+                    Console.Write(\textcolor{stringliteral}{"Wrong input! Please, enter again: "});
+                    \textcolor{keywordflow}{continue};
+                \}
+            \}
+            mySys.printPalka(20);
+            Console.WriteLine(\textcolor{stringliteral}{"Eliminated element : "} + f.data.ToString());
+            mySys.printPalka(20);
+            Console.WriteLine(\textcolor{stringliteral}{"Printing stack: "});
+            a.print();
+        \}
+        \textcolor{keyword}{public} \textcolor{keywordtype}{void} run()
+        \{
+            \textcolor{keywordtype}{bool} t = \textcolor{keyword}{true};
+            \textcolor{keywordtype}{bool} p = \textcolor{keyword}{true};
+            \textcolor{keywordflow}{while} (p)
+            \{
+                Console.Clear();
+                \textcolor{keywordflow}{if} (t) Console.WriteLine(\textcolor{stringliteral}{"Lab\_3 by Baybarin R.\(\backslash\)n"});
+                t = \textcolor{keyword}{false};
+                Console.Write(\textcolor{stringliteral}{"============\(\backslash\)n"} +
+                              \textcolor{stringliteral}{"Menu\(\backslash\)n"} +
+                              \textcolor{stringliteral}{"============\(\backslash\)n"} +
+                              \textcolor{stringliteral}{"1) Testing ArrayList.Sort()\(\backslash\)n"} +
+                              \textcolor{stringliteral}{"2) Testing Sparse Matrix\(\backslash\)n"} +
+                              \textcolor{stringliteral}{"3) Testing SimpleList\(\backslash\)n"} +
+                              \textcolor{stringliteral}{"0) Exit\(\backslash\)n"} +
+                              \textcolor{stringliteral}{"============\(\backslash\)n"} +
+                              \textcolor{stringliteral}{"Your choice: "});
+                \textcolor{keywordtype}{int} caseSwitch;
+                \textcolor{keywordtype}{bool} f;
+                f = \textcolor{keywordtype}{int}.TryParse(Console.ReadLine(), out caseSwitch);
+                \textcolor{keywordflow}{if} (!f || caseSwitch < 0 || caseSwitch > 3)
+                \{
+                    Console.WriteLine(\textcolor{stringliteral}{"ERROR!!!!! WRONG INPUT"});
+                    mySys.pause();
+                    \textcolor{keywordflow}{continue};
+                \}
+                \textcolor{keywordflow}{switch} (caseSwitch)
+                \{
+                    \textcolor{keywordflow}{case} 0:
+                        p = \textcolor{keyword}{false};
+                        Console.WriteLine(\textcolor{stringliteral}{"Exiting...Press Enter"});
+                        \textcolor{keywordflow}{break};
+                    \textcolor{keywordflow}{case} 1: case1();
+                        \textcolor{keywordflow}{break};
+                    \textcolor{keywordflow}{case} 2: case2();
+                        \textcolor{keywordflow}{break};
+                    \textcolor{keywordflow}{case} 3: case3();
+                        \textcolor{keywordflow}{break};
+                \}
+                mySys.pause();
+            \}
+        \}
+    \}
+\}
+﻿using System;
+\textcolor{keyword}{using} System.Collections.Generic;
+\textcolor{keyword}{using} System.Linq;
+\textcolor{keyword}{using} System.Text;
+\textcolor{keyword}{using} System.Threading.Tasks;
+
+\textcolor{keyword}{namespace }\hyperlink{namespace_lab__3}{Lab\_3}
+\{
+    \textcolor{keyword}{class }MySystem
+    \{
+        \textcolor{keyword}{public} \textcolor{keywordtype}{void} pause()
+        \{
+            Console.WriteLine(\textcolor{stringliteral}{"Input enter..."});
+            Console.ReadLine();
+        \}
+        \textcolor{keyword}{public} \textcolor{keywordtype}{void} printPalka(\textcolor{keywordtype}{int} l)
+        \{
+            \textcolor{keywordflow}{for} (\textcolor{keywordtype}{int} i = 0; i < l; i++)
+            \{
+                Console.Write(\textcolor{stringliteral}{"="});
+            \}
+            Console.Write(\textcolor{stringliteral}{"\(\backslash\)n"});
+        \}
+        \textcolor{keyword}{public} Figure GenerFigure(\textcolor{keywordtype}{int} param, Random rand)
+        \{
+            Figure res = null;
+            \textcolor{keywordtype}{int} a = rand.Next(3);
+            \textcolor{keywordflow}{switch} (a)
+            \{
+                \textcolor{keywordflow}{case} 0:
+                    res = \textcolor{keyword}{new} Circle(rand.Next(param));
+                    \textcolor{keywordflow}{break};
+                \textcolor{keywordflow}{case} 1:
+                    res = \textcolor{keyword}{new} Rect(rand.Next(param), rand.Next(param));
+                    \textcolor{keywordflow}{break};
+                \textcolor{keywordflow}{case} 2:
+                    res = \textcolor{keyword}{new} Square(rand.Next(param));
+                    \textcolor{keywordflow}{break};
+            \}
+            \textcolor{keywordflow}{return} res;
+        \}
+    \}
+\}
+\end{DoxyCode}
+
+
+\href{Program.cs}{\tt Исходный код} 
+
+~\newline
+
+
+\subsubsection*{I\+II. Примеры работы}
+
+~\newline
