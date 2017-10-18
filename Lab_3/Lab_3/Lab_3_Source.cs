@@ -7,47 +7,8 @@ using System.Threading.Tasks;
 
 namespace Lab_3
 {
-    
-    
-    public interface IMatrAdapter<T>
-    {
-       T getEmptyElement();
-       bool checkEmptyElement(T element);
-        T Gener(int param, Random rand);
-    }
-    public class FigureMatrixCheckEmpty : IMatrAdapter<Figure>
-    {
-        Figure IMatrAdapter<Figure>.getEmptyElement()
-        {
-            return null;
-        }
-        bool IMatrAdapter<Figure>.checkEmptyElement(Figure element)
-        {
-            bool res = false;
-            if (element == null)
-                res = true;
-            return res;
-        }
-        Figure IMatrAdapter<Figure>.Gener(int param, Random rand)
-        {
-            Figure res = null;
-            int a = rand.Next(3);
-            switch (a)
-            {
-                case 0:
-                    res = new Circle(rand.Next(param));
-                    break;
-                case 1:
-                    res = new Rect(rand.Next(param), rand.Next(param));
-                    break;
-                case 2:
-                    res = new Square(rand.Next(param));
-                    break;
-            }
-            return res;
-        }
-    }
-    class TestArray :IPrint
+
+    class TestArray : IPrint
     {
         ArrayList arr1;
         Random rand;
@@ -87,6 +48,26 @@ namespace Lab_3
         public void Sort()
         {
             arr1.Sort();
+        }
+    }
+    //==================================
+    public interface IMatrAdapter<T>
+    {
+       T getEmptyElement();
+       bool checkEmptyElement(T element);
+    }
+    public class FigureMatrixCheckEmpty : IMatrAdapter<Figure>
+    {
+        Figure IMatrAdapter<Figure>.getEmptyElement()
+        {
+            return null;
+        }
+        bool IMatrAdapter<Figure>.checkEmptyElement(Figure element)
+        {
+            bool res = false;
+            if (element == null)
+                res = true;
+            return res;
         }
     }
     class Matrix<T>:IPrint
@@ -169,12 +150,18 @@ namespace Lab_3
             Console.WriteLine(this.ToString());
         }
     }
-    class SimpleList<T>:IPrint
-        where T:IComparable
+    //==================================
+    class SimpleList<T> : IPrint
+        where T : IComparable
     {
-        protected SimpleListItem<T> first = null;
-        protected SimpleListItem<T> last = null;
+        protected SimpleListItem<T> first;
+        protected SimpleListItem<T> last;
         int _count;
+        public SimpleList()
+        {
+            first = null;
+            last = null;
+        }
         public int count
         {
             get
@@ -223,6 +210,15 @@ namespace Lab_3
         {
             return getItem(number).data;
         }
+        public override string ToString()
+        {
+            StringBuilder res = new StringBuilder();
+            for (int i = 0; i < count; i++)
+            {
+                res.Append(i.ToString()+") "+Get(i).ToString()+"\n");
+            }
+            return res.ToString();
+        }
         public void print()
         {
             Console.WriteLine(this.ToString());
@@ -260,6 +256,31 @@ namespace Lab_3
         }
         SimpleListItem<T> _next = null;
     }
+    class SimpleStack<T> : SimpleList<T>
+        where T:IComparable
+    {
+        public SimpleListItem<T> Pop(int i)
+        {
+            SimpleListItem<T> buf = getItem(i);
+            if (first == buf)
+            {
+                first = buf.next;//ошибка, если в списке 1 элемент!
+                if (count == 1)
+                    last = null;
+            }
+            else
+            {
+                getItem(i - 1).next = buf.next;
+            }
+            count--;
+            return buf;
+        }
+        public void Push(T element)
+        {
+            Add(element);
+        }
+    }
+    //==================================
     class Menu
     {
         MySystem mySys = new MySystem();
@@ -268,7 +289,7 @@ namespace Lab_3
             int res;
             bool f = int.TryParse(Console.ReadLine(), out res);
             if (!f)
-                throw new Exception("Wrong input");
+                throw new ArgumentException("Wrong input");
             return res;
         }
         void case1()
@@ -298,7 +319,7 @@ namespace Lab_3
             for (int i = 0; i < times; i++)
             {
                 int i0 = rand.Next(rmax), i1 = rand.Next(rmax), i2 = rand.Next(rmax);
-                matr[i0, i1, i2] = matr.Adap.Gener(10, rand);
+                matr[i0, i1, i2] = mySys.GenerFigure(10, rand);
             }
             Console.WriteLine("Printing existing elements...");
             mySys.printPalka(20);
@@ -306,7 +327,41 @@ namespace Lab_3
         }
         void case3()
         {
-
+            Console.Clear();
+            Console.Write("Enter number of elements generated: ");
+            int times = intReadKey();
+            SimpleStack<Figure> a = new SimpleStack<Figure>();
+            Random rand = new Random();
+            for (int i = 0; i < times; i++)
+            {
+                a.Push(mySys.GenerFigure(10, rand));
+            }
+            Console.WriteLine("Printing generated data...");
+            mySys.printPalka(20);
+            a.print();
+            mySys.printPalka(20);
+            Console.Write("Enter number of eliminating element: ");
+            bool t = true;
+            SimpleListItem<Figure> f = null;
+            while (t)
+            {
+                times = intReadKey();
+                try
+                {
+                    f = a.Pop(times);
+                    t = false;
+                }
+                catch (ArgumentException)
+                {
+                    Console.Write("Wrong input! Please, enter again: ");
+                    continue;
+                }
+            }
+            mySys.printPalka(20);
+            Console.WriteLine("Eliminated element : " + f.data.ToString());
+            mySys.printPalka(20);
+            Console.WriteLine("Printing stack: ");
+            a.print();
         }
         public void run()
         {
@@ -332,7 +387,7 @@ namespace Lab_3
                 if (!f || caseSwitch < 0 || caseSwitch > 3)
                 {
                     Console.WriteLine("ERROR!!!!! WRONG INPUT");
-                    Console.ReadLine();
+                    mySys.pause();
                     continue;
                 }
                 switch (caseSwitch)
@@ -348,7 +403,7 @@ namespace Lab_3
                     case 3: case3();
                         break;
                 }
-                Console.ReadLine();
+                mySys.pause();
             }
         }
     }

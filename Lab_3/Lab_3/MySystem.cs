@@ -21,5 +21,23 @@ namespace Lab_3
             }
             Console.Write("\n");
         }
+        public Figure GenerFigure(int param, Random rand)
+        {
+            Figure res = null;
+            int a = rand.Next(3);
+            switch (a)
+            {
+                case 0:
+                    res = new Circle(rand.Next(param));
+                    break;
+                case 1:
+                    res = new Rect(rand.Next(param), rand.Next(param));
+                    break;
+                case 2:
+                    res = new Square(rand.Next(param));
+                    break;
+            }
+            return res;
+        }
     }
 }
