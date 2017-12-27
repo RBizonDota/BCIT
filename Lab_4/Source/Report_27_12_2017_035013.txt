@@ -1,0 +1,13 @@
+Opening file, reading and sorting array(ms): 2
+Searching in ListBox(ms): 0 (searched item: 4)
+Lev list (word_LevDist_Thread):
+a_2_0
+And_0_0
+as_2_0
+As_2_0
+in_2_1
+In_2_1
+no_2_2
+No_2_2
+On_2_2
+said_2_2
